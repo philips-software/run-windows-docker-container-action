@@ -1,0 +1,37 @@
+name: Update README
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  update-readme:
+
+    runs-on: [self-hosted, linux, X64, philips]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update README
+        uses: npalm/action-docs-action@v1.2.0
+        with:
+          readme: ./README.md
+          actionFile: ./action.yml
+          tocLevel: 2
+          lineBreaks: LF
+
+      - name: commit and push
+        uses: stefanzweifel/git-auto-commit-action@v4.15.0
+        with:
+          commit_message: "Auto-update README.md"
+          branch: "update-readme"
+          push_options: '--force'
+
+      - name: Create pull request
+        uses: devops-infra/action-pull-request@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: update-readme
+          target_branch: main
+          label: automated
+          title: Update README.md
+          body: "Automatically updated contents of README.md based on an updated action.yml file"

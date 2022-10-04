@@ -1,0 +1,67 @@
+name: Execute-in-windows-docker-container
+description: Composite action for command execution with docker on windows
+author: Edward van de Vorst
+branding:
+  icon: "play"
+  color: "blue"
+
+inputs:
+  image:
+    description: 'Docker image.'
+    required: true
+  run:
+    description: 'Command to execute.'
+    required: true
+  workspace_path:
+    description: 'Workspace path. Default is root workspace path.'
+    required: false
+  mapping_path:
+    description: 'Mapping path, i.e. path to where the workspace path is mapped in the docker container. Defaults to workspace_path.'
+    required: false
+  work_path:
+    description: 'Work path, i.e. path where the command in the docker container is executed. Defaults to workspace_path.'
+    required: false
+  memory:
+    description: 'Memory limit. See docker documentation on --memory.'
+    required: false
+    default: '4GB'
+  entrypoint:
+    description: "Overrides the default ENTRYPOINT in docker image."
+    required: false
+    default: ''
+  env_names:
+    description: 'Environment variable names passed to docker image as comma separated list, for example: NAME1, NAME2, NAME3'
+    required: false
+    default: ''
+  extra_args:
+    description: 'Extra arguments for docker run command.'
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: check
+      if: runner.os != 'Windows'
+      run: echo "::error file=run-windows-docker-container-action/action.yml,line=46,col=1,endColumn=1::This action can only run on windows";
+      shell: bash
+    - name: settings
+      if: runner.os == 'Windows'
+      id: settings
+      run: >-
+          ${{github.action_path}}/src/parse_input_paths.ps1 -githubWorkSpace "${{ github.workspace }}" -workspacePath "@${{ inputs.workspace_path }}" -mappingPath "@${{ inputs.mapping_path }}" -workPath "@${{ inputs.work_path }}";
+          ${{github.action_path}}/src/parse_input_extra_args.ps1 -envNames "@${{ inputs.env_names }}" -entryPoint "@${{ inputs.entrypoint }}" -extraArgs "@${{ inputs.extra_args }}";
+      shell: powershell
+    - name: Run
+      if: runner.os == 'Windows'
+      run: >-
+        docker run ${{ steps.settings.outputs.extra_args }}
+        --rm 
+        --memory=${{ inputs.memory }}
+        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
+        -w ${{ steps.settings.outputs.work_path }}
+        ${{ inputs.image }}
+        {
+        ${{ inputs.run }}
+        }
+      shell: powershell
