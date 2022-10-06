@@ -47,13 +47,15 @@ and work path.
 | env_names | Environment variable names passed to docker image as comma separated list, for example: NAME1, NAME2, NAME3 | `false` |  |
 | extra_args | Extra arguments for docker run command. | `false` |  |
 
+
+
 <!-- action-docs-inputs -->
 
 
 <!-- action-docs-runs -->
 ## Runs
 
-This action is an `composite` action.
+This action is a `composite` action.
 
 
 <!-- action-docs-runs -->
