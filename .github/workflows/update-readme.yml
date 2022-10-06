@@ -25,6 +25,7 @@ jobs:
           commit_message: "Auto-update README.md"
           branch: "update-readme"
           push_options: '--force'
+          create_branch: true
 
       - name: Create pull request
         uses: devops-infra/action-pull-request@master
