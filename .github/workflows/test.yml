@@ -17,15 +17,16 @@ on:
 
 jobs:
   test:
-    runs-on: [self-hosted, windows, x64, philips, servercore-20H2]
+    runs-on: windows-2019
     name: Test
     env:
       TEST1: Test1
       TEST2: Test2
       TEST3: ${{ secrets.TEST_SECRET }}
+      TEST_PATH: "c:/map"
     strategy:
       matrix:
-        docker_container: ["mcr.microsoft.com/windows/servercore:20H2"]
+        docker_container: ["mcr.microsoft.com/windows/servercore:ltsc2019"]
 
     steps:
       - name: Checkout
@@ -36,16 +37,18 @@ jobs:
         uses: ./
         with:
           image: ${{ matrix.docker_container }}
+          mapping_path: 'c:\map'
           entrypoint: powershell.exe
-          env_names: GITHUB_WORKSPACE
+          env_names: TEST_PATH
           run: >-
-            ${{ github.workspace }}\test\run_test.ps1 -testPath "${{ github.workspace }}\test\run_default.Tests.ps1";
+            c:\map\test\run_test.ps1 -testPath "c:\map\test\run_default.Tests.ps1";
 
       - name: Test_ExtraArgs
         uses: ./
         with:
           image: ${{ matrix.docker_container }}
-          workspace_path: ${{ github.workspace }}
+          mapping_path: 'c:\map'
+          workspace_path: 'c:\map'
           extra_args: --entrypoint cmd.exe
           run: >-
             echo "Hello world";
@@ -57,17 +60,18 @@ jobs:
           entrypoint: powershell.exe
           env_names: TEST1, TEST2, TEST3
           run: >-
-            ${{ github.workspace }}\test\run_test.ps1 -testPath "${{ github.workspace }}\test\environment.Tests.ps1";
+            c:\map\test\run_test.ps1 -testPath "c:\map\test\environment.Tests.ps1";
 
       - name: Test_WorkPath
         uses: ./
         with:
           image: ${{ matrix.docker_container }}
+          mapping_path: 'c:\map'
           work_path: 'c:\temp'
           entrypoint: powershell.exe
           memory: 3GB
           run: >-
-            ${{ github.workspace }}\test\run_test.ps1 -testPath "${{ github.workspace }}\test\work_path.Tests.ps1";
+            c:\map\test\run_test.ps1 -testPath "c:\map\test\work_path.Tests.ps1";
 
       - name: Test_MappingPath
         uses: ./
@@ -84,15 +88,16 @@ jobs:
         uses: ./
         with:
           image: ${{ matrix.docker_container }}
-          workspace_path: ${{ github.workspace }}/test
+          mapping_path: 'c:\map'
+          workspace_path: 'c:\map\test'
           entrypoint: powershell.exe
           memory: 3GB
           env_names: GITHUB_WORKSPACE
           run: >-
-            ${{ github.workspace }}\test\run_test.ps1 -testPath "${{ github.workspace }}\test\workspace_path.Tests.ps1";
+            c:\map\test\run_test.ps1 -testPath "c:\map\test\workspace_path.Tests.ps1";
 
   validate:
-    runs-on: [self-hosted, linux, X64, philips]
+    runs-on: ubuntu-latest
     name: Validate
     container: mcr.microsoft.com/powershell:latest
 
