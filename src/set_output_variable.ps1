@@ -11,7 +11,15 @@ $trimArg        = "$invovationPath" + "\trim_arg.ps1";
 $trimmed_name = & $trimArg -arg $name;
 $trimmed_val  = & $trimArg -arg $val;
 
+function toGitHub  {
+    param(
+        $output_name,
+        $output_value
+    )
+    "$output_name=$output_value" >> $env:GITHUB_OUTPUT;
+}
+
 if ( ${trimmed_val}.Trim(' ') -ne "" )
 {
-    Write-Output "::set-output name=$trimmed_name::$trimmed_val";
+    toGitHub -output_name "$trimmed_name" -output_value "$trimmed_val";
 }
