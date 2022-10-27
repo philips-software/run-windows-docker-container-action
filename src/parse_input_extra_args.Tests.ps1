@@ -9,7 +9,7 @@ Describe "parse_input_extra_args" {
         It "it should return envNames" {
             $envNames = '@NAME1, NAME2'
             .\parse_input_extra_args.ps1 -envNames $envNames | Should -Be `
-                            "::set-output name=extra_args::  --env NAME1 --env  NAME2 "
+                            "`"extra_args=  --env NAME1 --env  NAME2 `" >> `$GITHUB_OUTPUT"
         }
     }
 
@@ -17,7 +17,7 @@ Describe "parse_input_extra_args" {
         It "it should return entrypoint" {
             $entryPoint = '@pwsh.exe'
             .\parse_input_extra_args.ps1 -entryPoint $entryPoint | Should -Be `
-                            "::set-output name=extra_args::   --entrypoint pwsh.exe"
+                            "`"extra_args=   --entrypoint pwsh.exe`" >> `$GITHUB_OUTPUT"
         }
     }
 
@@ -25,7 +25,7 @@ Describe "parse_input_extra_args" {
         It "it should return extra args" {
             $extraArgs = '@--test 123456'
             .\parse_input_extra_args.ps1 -extraArgs $extraArgs | Should -Be `
-                            "::set-output name=extra_args::--test 123456  "
+                            "`"extra_args=--test 123456  `" >> `$GITHUB_OUTPUT"
         }
     }
 
@@ -34,7 +34,7 @@ Describe "parse_input_extra_args" {
             $entryPoint = '@pwsh.exe'
             $extraArgs = '@--test 123456'
             .\parse_input_extra_args.ps1 -entryPoint $entryPoint -extraArgs $extraArgs | Should -Be `
-                            "::set-output name=extra_args::--test 123456   --entrypoint pwsh.exe"
+                            "`"extra_args=--test 123456   --entrypoint pwsh.exe`" >> `$GITHUB_OUTPUT"
         }
     }
 
@@ -43,7 +43,7 @@ Describe "parse_input_extra_args" {
             $entryPoint = '@pwsh.exe'
             $envNames = '@NAME1,NAME2'
             .\parse_input_extra_args.ps1 -entryPoint $entryPoint -envNames $envNames | Should -Be `
-                            "::set-output name=extra_args::  --env NAME1 --env NAME2  --entrypoint pwsh.exe"
+                            "`"extra_args=  --env NAME1 --env NAME2  --entrypoint pwsh.exe`" >> `$GITHUB_OUTPUT"
         }
     }
 
@@ -53,7 +53,7 @@ Describe "parse_input_extra_args" {
             $envNames = '@NAME1,NAME2'
             $extraArgs = '@--test 123456'
             .\parse_input_extra_args.ps1 -entryPoint $entryPoint -envNames $envNames -extraArgs $extraArgs | Should -Be `
-                            "::set-output name=extra_args::--test 123456  --env NAME1 --env NAME2  --entrypoint pwsh.exe"
+                            "`"extra_args=--test 123456  --env NAME1 --env NAME2  --entrypoint pwsh.exe`" >> `$GITHUB_OUTPUT"
         }
     }
 }

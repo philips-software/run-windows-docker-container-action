@@ -13,5 +13,5 @@ $trimmed_val  = & $trimArg -arg $val;
 
 if ( ${trimmed_val}.Trim(' ') -ne "" )
 {
-    Write-Output "::set-output name=$trimmed_name::$trimmed_val";
+    Write-Output "`"$trimmed_name=$trimmed_val`" >> `$GITHUB_OUTPUT";
 }

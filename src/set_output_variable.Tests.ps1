@@ -18,7 +18,7 @@ Describe "set_output_variable" {
         It "it should return output" {
             $name = '@theName'
             $val = '@value'
-            .\set_output_variable.ps1 -name $name -val $val | Should -Be "::set-output name=theName::value"
+            .\set_output_variable.ps1 -name $name -val $val | Should -Be "`"theName=value`" >> `$GITHUB_OUTPUT"
         }
     }
 
@@ -26,8 +26,7 @@ Describe "set_output_variable" {
         It "it should return output" {
             $name = 'theName'
             $val = 'value'
-            .\set_output_variable.ps1 -name $name -val $val | Should -Be "::set-output name=theName::value"
+            .\set_output_variable.ps1 -name $name -val $val | Should -Be "`"theName=value`" >> `$GITHUB_OUTPUT"
         }
     }
-
 }
