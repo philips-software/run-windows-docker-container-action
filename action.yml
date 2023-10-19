@@ -37,23 +37,42 @@ inputs:
     description: 'Extra arguments for docker run command.'
     required: false
     default: ''
+  pre-warm:
+    description: 'Run a warming-up container (which might crash due to first time use failure)'
+    required: false
+    default: 'true'
+  pre-warm-cmd:
+    description: 'Pre warm command to run inside the container'
+    required: false
+    default: 'echo "warming up!"'
+
 
 runs:
   using: "composite"
   steps:
     - name: check
       if: runner.os != 'Windows'
-      run: echo "::error file=run-windows-docker-container-action/action.yml,line=46,col=1,endColumn=1::This action can only run on windows";
+      run: |
+        echo "::error file=run-windows-docker-container-action/action.yml,line=52,col=1,endColumn=1::This action can only run on windows";
+        exit -1
       shell: bash
     - name: settings
-      if: runner.os == 'Windows'
       id: settings
       run: >-
           ${{github.action_path}}/src/parse_input_paths.ps1 -githubWorkSpace "${{ github.workspace }}" -workspacePath "@${{ inputs.workspace_path }}" -mappingPath "@${{ inputs.mapping_path }}" -workPath "@${{ inputs.work_path }}";
           ${{github.action_path}}/src/parse_input_extra_args.ps1 -envNames "@${{ inputs.env_names }}" -entryPoint "@${{ inputs.entrypoint }}" -extraArgs "@${{ inputs.extra_args }}";
       shell: powershell
+    - name: Pre-warm
+      if: inputs.pre-warm == 'true'
+      run: |
+        docker run ${{ steps.settings.outputs.extra_args }} `
+        --rm --memory=${{ inputs.memory }} `
+        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }} `
+        -w ${{ steps.settings.outputs.work_path }} `
+        ${{ inputs.image }} { ${{ inputs.pre-warm-cmd }} }
+        exit 0
+      shell: powershell
     - name: Run
-      if: runner.os == 'Windows'
       run: >-
         docker run ${{ steps.settings.outputs.extra_args }}
         --rm 
