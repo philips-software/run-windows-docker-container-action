@@ -46,6 +46,8 @@ and work path.
 | entrypoint | Overrides the default ENTRYPOINT in docker image. | `false` |  |
 | env_names | Environment variable names passed to docker image as comma separated list, for example: NAME1, NAME2, NAME3 | `false` |  |
 | extra_args | Extra arguments for docker run command. | `false` |  |
+| pre-warm | Run a warming-up container (which might crash due to first time use failure) | `false` | true |
+| pre-warm-cmd | Pre warm command to run inside the container | `false` | echo "warming up!" |
 
 
 
