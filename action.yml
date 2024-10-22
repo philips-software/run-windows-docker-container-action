@@ -48,6 +48,9 @@ inputs:
   username:
     description: 'Docker username.'
     required: false
+  auth_token:
+    description: 'Docker auth_token.'
+    required: false
   repository:
     description: 'Docker repository.'
     required: false
@@ -71,7 +74,7 @@ runs:
       id: docker_login
       shell: powershell
       run: >-
-        echo ${{ secrets.docker_secret }} | docker login ${{ inputs.repository }} -u ${{ inputs.username }} --password-stdin
+        echo ${{ inputs.auth_token }} | docker login ${{ inputs.repository }} -u ${{ inputs.username }} --password-stdin
     - name: Pre-warm
       if: inputs.pre-warm == 'true'
       run: |
