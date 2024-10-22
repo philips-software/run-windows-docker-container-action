@@ -74,7 +74,7 @@ runs:
       id: docker_login
       shell: powershell
       run: >-
-        echo ${{ inputs.auth_token }} | docker login ${{ inputs.repository }} -u ${{ inputs.username }} --password-stdin
+        docker login ${{ inputs.repository }} -u ${{ inputs.username }} -p ${{ inputs.auth_token }}
     - name: Pre-warm
       if: inputs.pre-warm == 'true'
       run: |
