@@ -45,7 +45,12 @@ inputs:
     description: 'Pre warm command to run inside the container'
     required: false
     default: 'echo "warming up!"'
-
+  username:
+    description: 'Docker username.'
+    required: false
+  repository:
+    description: 'Docker repository.'
+    required: false
 
 runs:
   using: "composite"
@@ -62,6 +67,11 @@ runs:
           ${{github.action_path}}/src/parse_input_paths.ps1 -githubWorkSpace "${{ github.workspace }}" -workspacePath "@${{ inputs.workspace_path }}" -mappingPath "@${{ inputs.mapping_path }}" -workPath "@${{ inputs.work_path }}";
           ${{github.action_path}}/src/parse_input_extra_args.ps1 -envNames "@${{ inputs.env_names }}" -entryPoint "@${{ inputs.entrypoint }}" -extraArgs "@${{ inputs.extra_args }}";
       shell: powershell
+    - name: docker_login
+      id: docker_login
+      shell: powershell
+      run: >-
+        echo ${{ secrets.docker_secret }} | docker login ${{ inputs.repository }} -u ${{ inputs.username }} --password-stdin
     - name: Pre-warm
       if: inputs.pre-warm == 'true'
       run: |
@@ -84,3 +94,8 @@ runs:
         ${{ inputs.run }}
         }
       shell: powershell
+    - name: docker_logout
+      id: docker_logout
+      shell: powershell
+      run: >-
+        docker logout ${{ inputs.repository }}
