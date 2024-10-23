@@ -48,10 +48,10 @@ and work path.
 | extra_args | Extra arguments for docker run command. | `false` |  |
 | pre-warm | Run a warming-up container (which might crash due to first time use failure) | `false` | true |
 | pre-warm-cmd | Pre warm command to run inside the container | `false` | echo "warming up!" |
-| registry_authentication | Enable authentication on the registry server | `false` | `false`
-| registry_username | Registry server username | `false`
-| registry_token | Registry server token | `false`
-| registry_repository | Registry server repository | `false`
+| registry_authentication | Authenticate against registry server | `false` | false |
+| registry_username | Docker registry username. | `false` |  |
+| registry_token | Docker registry token | `false` |  |
+| registry_repository | Docker registry repository | `false` |  |
 
 
 
