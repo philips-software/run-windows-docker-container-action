@@ -45,7 +45,19 @@ inputs:
     description: 'Pre warm command to run inside the container'
     required: false
     default: 'echo "warming up!"'
-
+  registry_authentication:
+    description : 'Authenticate against registry server'
+    required : false
+    default: 'false'
+  registry_username:
+    description: 'Docker registry username.'
+    required: false
+  registry_token:
+    description: 'Docker registry token'
+    required: false
+  registry_repository:
+    description: 'Docker registry repository'
+    required: false
 
 runs:
   using: "composite"
@@ -62,6 +74,12 @@ runs:
           ${{github.action_path}}/src/parse_input_paths.ps1 -githubWorkSpace "${{ github.workspace }}" -workspacePath "@${{ inputs.workspace_path }}" -mappingPath "@${{ inputs.mapping_path }}" -workPath "@${{ inputs.work_path }}";
           ${{github.action_path}}/src/parse_input_extra_args.ps1 -envNames "@${{ inputs.env_names }}" -entryPoint "@${{ inputs.entrypoint }}" -extraArgs "@${{ inputs.extra_args }}";
       shell: powershell
+    - name: docker_login
+      id: docker_login
+      if: inputs.registry_authentication == 'true'
+      shell: powershell
+      run: >-
+        docker login ${{ inputs.registry_repository }} -u ${{ inputs.registry_username }} -p ${{ inputs.registry_token }}
     - name: Pre-warm
       if: inputs.pre-warm == 'true'
       run: |
@@ -84,3 +102,9 @@ runs:
         ${{ inputs.run }}
         }
       shell: powershell
+    - name: docker_logout
+      id: docker_logout
+      if: inputs.registry_authentication == 'true'
+      shell: powershell
+      run: >-
+        docker logout ${{ inputs.registry_repository }}
