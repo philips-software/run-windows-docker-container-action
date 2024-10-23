@@ -45,14 +45,18 @@ inputs:
     description: 'Pre warm command to run inside the container'
     required: false
     default: 'echo "warming up!"'
-  username:
-    description: 'Docker username.'
+  registry_authentication:
+    description : 'Authenticate against registry server'
+    required : false
+    default: 'false'
+  registry_username:
+    description: 'Docker registry username.'
     required: false
-  auth_token:
-    description: 'Docker auth_token.'
+  registry_token:
+    description: 'Docker registry token'
     required: false
-  repository:
-    description: 'Docker repository.'
+  registry_repository:
+    description: 'Docker registry repository'
     required: false
 
 runs:
@@ -72,9 +76,10 @@ runs:
       shell: powershell
     - name: docker_login
       id: docker_login
+      if: inputs.registry_authentication == 'true'
       shell: powershell
       run: >-
-        docker login ${{ inputs.repository }} -u ${{ inputs.username }} -p ${{ inputs.auth_token }}
+        docker login ${{ inputs.registry_repository }} -u ${{ inputs.registry_username }} -p ${{ inputs.registry_token }}
     - name: Pre-warm
       if: inputs.pre-warm == 'true'
       run: |
@@ -99,6 +104,7 @@ runs:
       shell: powershell
     - name: docker_logout
       id: docker_logout
+      if: inputs.registry_authentication == 'true'
       shell: powershell
       run: >-
-        docker logout ${{ inputs.repository }}
+        docker logout ${{ inputs.registry_repository }}
