@@ -65,14 +65,15 @@ runs:
     - name: check
       if: runner.os != 'Windows'
       run: |
-        echo "::error file=run-windows-docker-container-action/action.yml,line=52,col=1,endColumn=1::This action can only run on windows";
+        echo "::error file=run-windows-docker-container-action/action.yml,line=68,col=1,endColumn=1::This action can only run on windows";
         exit -1
       shell: bash
     - name: settings
       id: settings
       run: >-
-          ${{github.action_path}}/src/parse_input_paths.ps1 -githubWorkSpace "${{ github.workspace }}" -workspacePath "@${{ inputs.workspace_path }}" -mappingPath "@${{ inputs.mapping_path }}" -workPath "@${{ inputs.work_path }}";
-          ${{github.action_path}}/src/parse_input_extra_args.ps1 -envNames "@${{ inputs.env_names }}" -entryPoint "@${{ inputs.entrypoint }}" -extraArgs "@${{ inputs.extra_args }}";
+          ${{ github.action_path }}/src/parse_input_paths.ps1 -githubWorkSpace "${{ github.workspace }}" -workspacePath "@${{ inputs.workspace_path }}" -mappingPath "@${{ inputs.mapping_path }}" -workPath "@${{ inputs.work_path }}";
+          ${{ github.action_path }}/src/parse_input_extra_args.ps1 -envNames "@${{ inputs.env_names }}" -entryPoint "@${{ inputs.entrypoint }}" -extraArgs "@${{ inputs.extra_args }}";
+          ${{ github.action_path }}/src/assign_default_environment_variables.ps1;
       shell: powershell
     - name: docker_login
       id: docker_login
@@ -92,7 +93,9 @@ runs:
       shell: powershell
     - name: Run
       run: >-
-        docker run ${{ steps.settings.outputs.extra_args }}
+        docker run
+        ${{ steps.settings.outputs.default_environment_variables }}
+        ${{ steps.settings.outputs.extra_args }}
         --rm 
         --memory=${{ inputs.memory }}
         -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
