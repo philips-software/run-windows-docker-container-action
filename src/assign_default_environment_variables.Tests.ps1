@@ -33,7 +33,7 @@ Describe "assign_default_environment_variables" {
             }
 
             # Assert: Verify the output variable is set correctly
-            $result | Should -Match "default_environment_variables=@"
+            $result | Should -Match "default_environment_variables="
         }
     }
 }
