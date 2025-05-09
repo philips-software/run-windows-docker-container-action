@@ -29,10 +29,7 @@ jobs:
         docker_container: ["mcr.microsoft.com/windows/servercore:ltsc2019"]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Test_Run_Default
         uses: ./
         with:
@@ -103,10 +100,7 @@ jobs:
     container: mcr.microsoft.com/powershell:latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install
         shell: pwsh
         run: >-
