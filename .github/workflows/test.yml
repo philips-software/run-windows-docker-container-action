@@ -110,7 +110,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     name: Validate
-    container: mcr.microsoft.com/powershell:latest
+    container: mcr.microsoft.com/powershell:7.5-ubuntu-24.04
 
     steps:
       - name: Checkout
