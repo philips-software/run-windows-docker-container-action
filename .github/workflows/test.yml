@@ -53,6 +53,7 @@ jobs:
           run: >-
             echo "Hello world";
             exit %ERRORLEVEL%;
+
       - name: Test_Environment
         uses: ./
         with:
@@ -62,6 +63,15 @@ jobs:
           env_names: TEST1, TEST2, TEST3
           run: >-
             c:\map\test\run_test.ps1 -testPath "c:\map\test\environment.Tests.ps1";
+
+      - name: Test_Default_Environment
+        uses: ./
+        with:
+          image: ${{ matrix.docker_container }}
+          entrypoint: powershell.exe
+          mapping_path: 'c:\map'
+          run: >-
+            c:\map\test\run_test.ps1 -testPath "c:\map\test\default_environment.Tests.ps1";
 
       - name: Test_WorkPath
         uses: ./
