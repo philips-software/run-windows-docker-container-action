@@ -1,4 +1,5 @@
 name: Update README
+
 on:
   push:
     branches: [ main ]
@@ -9,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Update README
-        uses: npalm/action-docs-action@v1.2.0
+        uses: npalm/action-docs-action@b1dd20339140224c1ffef389467e4fece8dc416b # v3.1.2
         with:
           readme: ./README.md
           actionFile: ./action.yml
@@ -20,7 +21,7 @@ jobs:
           lineBreaks: LF
 
       - name: commit and push
-        uses: stefanzweifel/git-auto-commit-action@v4.15.0
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
           commit_message: "Auto-update README.md"
           branch: "update-readme"
@@ -28,7 +29,7 @@ jobs:
           create_branch: true
 
       - name: Create pull request
-        uses: devops-infra/action-pull-request@master
+        uses: devops-infra/action-pull-request@ff118b4a7c24bac5a3c95acef59e9edd1fc37890 # v0.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_branch: update-readme
