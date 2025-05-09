@@ -124,6 +124,7 @@ jobs:
              Install-Module -Name Pester -Force -SkipPublisherCheck;
              Update-Module -Name Pester -Force;
              Install-Module -Name PSScriptAnalyzer -Force;
+             Import-Module PSScriptAnalyzer -ErrorAction Stop
       - name: Linter src
         shell: pwsh
         run: >-
