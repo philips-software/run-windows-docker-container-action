@@ -1,5 +1,5 @@
 
-# Action for running commands in a windows docker
+# Action for running commands in a windows docker container
 
 ## State
 
@@ -29,8 +29,14 @@ Very simple hello world example:
             ./run-test-script.ps1;
 ```
 
-On default, the github workspace directory is mapped to the docker volume path
-and work path. 
+## Default environment
+
+This action tries to stay close to GitHub's Action environment, and
+as such all GitHub defined [default environment variables](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables) are passed
+to the container by default.
+
+By default, the github workspace directory is mapped to the docker volume path
+and work path.
 
 <!-- action-docs-inputs -->
 ## Inputs
