@@ -96,8 +96,9 @@ runs:
         docker run
         ${{ steps.settings.outputs.default_environment_variables }}
         ${{ steps.settings.outputs.extra_args }}
-        --rm 
+        --rm
         --memory=${{ inputs.memory }}
+        -v C:\actions-runner\_work\_temp:C:\actions-runner\_work\_temp
         -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
         -w ${{ steps.settings.outputs.work_path }}
         ${{ inputs.image }}
