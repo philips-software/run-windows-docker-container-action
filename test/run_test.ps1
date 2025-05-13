@@ -14,8 +14,7 @@ powershell.exe -ExecutionPolicy RemoteSigned `Invoke-WebRequest 'https://get.sco
 C:\TMP\install.ps1 -RunAsAdmin;
 scoop install pester;
 
-$config=New-PesterConfiguration;
-$config.Run.Exit=$true;
-$config.Run.Path="$testPath";
+$config = New-PesterConfiguration;
+$config.Run.Path = "$testPath";
 
-Invoke-Pester -Configuration $config;
+Invoke-Pester -CI -Configuration $config;
