@@ -98,7 +98,7 @@ runs:
         ${{ steps.settings.outputs.extra_args }}
         --rm
         --memory=${{ inputs.memory }}
-        -v $(Split-Path -Path ${env:GITHUB_EVENT_PATH} -Leaf):$(Split-Path -Path ${env:GITHUB_EVENT_PATH} -Leaf)
+        -v C:\a\_temp\_github_workflow:C:\a\_temp\_github_workflow
         -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
         -w ${{ steps.settings.outputs.work_path }}
         ${{ inputs.image }}
