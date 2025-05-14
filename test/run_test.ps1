@@ -8,13 +8,15 @@ if (-not(Test-Path -Path $testPath -PathType Leaf))
     exit 1;
 }
 
-# using scoop to install pester
-mkdir C:\TMP;
-powershell.exe -ExecutionPolicy RemoteSigned `Invoke-WebRequest 'https://get.scoop.sh' -outfile C:\TMP\install.ps1;
-C:\TMP\install.ps1 -RunAsAdmin;
-scoop install pester;
+Install-Module -Force Pester
+If ($? -ne "True" ) { Throw };
 
-$config = New-PesterConfiguration;
-$config.Run.Path = "$testPath";
+$config=New-PesterConfiguration;
+If ($? -ne "True" ) { Throw };
+$config.Run.Exit=$true;
+If ($? -ne "True" ) { Throw };
+$config.Run.Path="$testPath";
+If ($? -ne "True" ) { Throw };
 
-Invoke-Pester -CI -Configuration $config;
+Invoke-Pester -Configuration $config;
+If ($? -ne "True" ) { Throw };
