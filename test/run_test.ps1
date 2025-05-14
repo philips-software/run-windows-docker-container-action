@@ -8,7 +8,9 @@ if (-not(Test-Path -Path $testPath -PathType Leaf))
     exit 1;
 }
 
-Install-Module -Force Pester
+Install-PackageProvider NuGet -Force;
+If ($? -ne "True" ) { Throw };
+Install-Module -Force Pester;
 If ($? -ne "True" ) { Throw };
 
 $config=New-PesterConfiguration;
