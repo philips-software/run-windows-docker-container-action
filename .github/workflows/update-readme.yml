@@ -29,7 +29,7 @@ jobs:
           create_branch: true
 
       - name: Create pull request
-        uses: devops-infra/action-pull-request@ff118b4a7c24bac5a3c95acef59e9edd1fc37890 # v0.6.0
+        uses: devops-infra/action-pull-request@a650fadebe990f25fa1e09369bf95d4a9b45ea2b # v0.6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_branch: update-readme
