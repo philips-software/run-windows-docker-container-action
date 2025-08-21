@@ -93,14 +93,15 @@ runs:
       shell: powershell
     - name: Run
       run: >-
-        $eventPath = Split-Path -Path "${env:GITHUB_EVENT_PATH}" -Parent;
+        $runnerPathSource = Split-Path -Path "${env:RUNNER_TEMP}" -Parent;
+        $runnerPathTarget = $runnerPathSource.replace('D:', 'C:')
 
         docker run
         ${{ steps.settings.outputs.default_environment_variables }}
         ${{ steps.settings.outputs.extra_args }}
         --rm
         --memory=${{ inputs.memory }}
-        -v ${eventPath}:${eventPath}
+        -v ${runnerPathSource}:${runnerPathTarget}
         -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
         -w ${{ steps.settings.outputs.work_path }}
         ${{ inputs.image }}
