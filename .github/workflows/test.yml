@@ -2,7 +2,7 @@ name: Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 'fix/**' ]
     paths-ignore:
       - '**.md'
       - '**.MD'
@@ -17,7 +17,7 @@ on:
 
 jobs:
   test:
-    runs-on: windows-2019
+    runs-on: windows-2022
     name: Test
     env:
       TEST1: Test1
@@ -26,7 +26,7 @@ jobs:
       TEST_MAPPING_PATH: "C:\\map"
     strategy:
       matrix:
-        docker_container: ["mcr.microsoft.com/windows/servercore:ltsc2019"]
+        docker_container: ["mcr.microsoft.com/windows/servercore:ltsc2022"]
 
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0

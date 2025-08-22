@@ -16,4 +16,4 @@ $args_env = & "$splitToArgs" -argument_name "@--env" -env_arrays "$envNames";
 $args_entrypoint = & "$setOptionalVariable" -argument_name "@--entrypoint" -setVal "$entryPoint";
 $eargs = & "$trimArg" -arg "$extraArgs";
 $allargs = "@" + "${eargs}" + " " + "${args_env}" + " " + "${args_entrypoint}";
-& "$setoutputVariable" -name extra_args -val "$allargs";
+& "$setoutputVariable" -replace "" -name extra_args -val "$allargs";

@@ -16,7 +16,7 @@ Describe "run_default" {
 
     Context "default GitHub Action paths should be available" {
         It "GITHUB_EVENT_PATH should exist" {
-            "$env:GITHUB_EVENT_PATH" | Should -Exist
+            "$env:GITHUB_EVENT_PATH".Replace('D:', 'C:') | Should -Exist
         }
     }
 }

@@ -14,6 +14,6 @@ $work_space_path = & "$getVariable" -defaultVal "$githubWorkSpace" -setVal "$wor
 $mapping_path    = & "$getVariable" -defaultVal "$work_space_path" -setVal "$mappingPath";
 $work_path       = & "$getVariable" -defaultVal "$mapping_path"    -setVal "$workPath";
 
-& "$setoutputVariable" -name workspace_path -val "$work_space_path";
+& "$setoutputVariable" -replace "" -name workspace_path -val "$work_space_path";
 & "$setoutputVariable" -name mapping_path   -val "$mapping_path";
 & "$setoutputVariable" -name work_path      -val "$work_path";
