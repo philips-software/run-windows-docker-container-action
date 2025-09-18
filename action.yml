@@ -29,6 +29,10 @@ inputs:
     description: "Overrides the default ENTRYPOINT in docker image."
     required: false
     default: ''
+  entrypoint_args:
+    description: "Extra args for the ENTRYPOINT (default or overriden)."
+    required: false
+    default: ''
   env_names:
     description: 'Environment variable names passed to docker image as comma separated list, for example: NAME1, NAME2, NAME3'
     required: false
@@ -83,12 +87,18 @@ runs:
         docker login ${{ inputs.registry_repository }} -u ${{ inputs.registry_username }} -p ${{ inputs.registry_token }}
     - name: Pre-warm
       if: inputs.pre-warm == 'true'
-      run: |
-        docker run ${{ steps.settings.outputs.extra_args }} `
-        --rm --memory=${{ inputs.memory }} `
-        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }} `
-        -w ${{ steps.settings.outputs.work_path }} `
-        ${{ inputs.image }} { ${{ inputs.pre-warm-cmd }} }
+      run: >-
+        docker run
+        ${{ steps.settings.outputs.extra_args }}
+        --rm
+        --memory=${{ inputs.memory }}
+        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
+        -w ${{ steps.settings.outputs.work_path }}
+        ${{ inputs.image }}
+        ${{ inputs.entrypoint_args }}
+        {
+        ${{ inputs.pre-warm-cmd }}
+        }
         exit 0
       shell: powershell -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
     - name: Run
@@ -105,6 +115,7 @@ runs:
         -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
         -w ${{ steps.settings.outputs.work_path }}
         ${{ inputs.image }}
+        ${{ inputs.entrypoint_args }}
         {
         ${{ inputs.run }}
         }
