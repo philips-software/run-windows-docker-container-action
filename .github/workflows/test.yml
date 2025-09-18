@@ -35,7 +35,7 @@ jobs:
         with:
           image: ${{ matrix.docker_container }}
           mapping_path: 'c:\map'
-          entrypoint: powershell.exe
+          entrypoint: powershell.exe -NoLogo -NonInteractive -NoProfile -OutputFormat Text
           env_names: TEST_MAPPING_PATH
           run: >-
             c:\map\test\run_test.ps1 -testPath "c:\map\test\run_default.Tests.ps1";
@@ -46,7 +46,7 @@ jobs:
           image: ${{ matrix.docker_container }}
           mapping_path: 'c:\map'
           workspace_path: ${{ github.workspace }}
-          extra_args: --entrypoint cmd.exe
+          extra_args: --entrypoint "powershell.exe -NoLogo -NonInteractive -NoProfile -OutputFormat Text"
           run: >-
             echo "Hello world";
             exit %ERRORLEVEL%;
@@ -55,7 +55,7 @@ jobs:
         uses: ./
         with:
           image: ${{ matrix.docker_container }}
-          entrypoint: powershell.exe
+          entrypoint: powershell.exe -NoLogo -NonInteractive -NoProfile -OutputFormat Text
           mapping_path: 'c:\map'
           env_names: TEST1, TEST2, TEST3
           run: >-
@@ -65,7 +65,7 @@ jobs:
         uses: ./
         with:
           image: ${{ matrix.docker_container }}
-          entrypoint: powershell.exe
+          entrypoint: powershell.exe -NoLogo -NonInteractive -NoProfile -OutputFormat Text
           mapping_path: 'c:\map'
           run: >-
             c:\map\test\run_test.ps1 -testPath "c:\map\test\default_environment.Tests.ps1";
@@ -76,7 +76,7 @@ jobs:
           image: ${{ matrix.docker_container }}
           mapping_path: 'c:\map'
           work_path: 'c:\temp'
-          entrypoint: powershell.exe
+          entrypoint: powershell.exe -NoLogo -NonInteractive -NoProfile -OutputFormat Text
           memory: 3GB
           run: >-
             c:\map\test\run_test.ps1 -testPath "c:\map\test\work_path.Tests.ps1";
@@ -87,7 +87,7 @@ jobs:
           image: ${{ matrix.docker_container }}
           mapping_path: 'c:\mapping'
           work_path: 'c:\temp'
-          entrypoint: powershell.exe
+          entrypoint: powershell.exe -NoLogo -NonInteractive -NoProfile -OutputFormat Text
           memory: 3GB
           run: >-
             c:\mapping\test\run_test.ps1 -testPath "c:\mapping\test\mapping_path.Tests.ps1";
@@ -98,7 +98,7 @@ jobs:
           image: ${{ matrix.docker_container }}
           mapping_path: 'c:\map'
           workspace_path: ${{ github.workspace }}/test
-          entrypoint: powershell.exe
+          entrypoint: powershell.exe -NoLogo -NonInteractive -NoProfile -OutputFormat Text
           memory: 3GB
           env_names: TEST_MAPPING_PATH
           run: >-
