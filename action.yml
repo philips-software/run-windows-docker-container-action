@@ -74,7 +74,7 @@ runs:
       shell: bash
     - name: settings
       id: settings
-      run: >-
+      run: |
           ${{ github.action_path }}/src/parse_input_paths.ps1 -githubWorkSpace "${{ github.workspace }}" -workspacePath "@${{ inputs.workspace_path }}" -mappingPath "@${{ inputs.mapping_path }}" -workPath "@${{ inputs.work_path }}";
           ${{ github.action_path }}/src/parse_input_extra_args.ps1 -envNames "@${{ inputs.env_names }}" -entryPoint "@${{ inputs.entrypoint }}" -extraArgs "@${{ inputs.extra_args }}";
           ${{ github.action_path }}/src/assign_default_environment_variables.ps1;
@@ -83,46 +83,46 @@ runs:
       id: docker_login
       if: inputs.registry_authentication == 'true'
       shell: powershell -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
-      run: >-
+      run: |
         docker login ${{ inputs.registry_repository }} -u ${{ inputs.registry_username }} -p ${{ inputs.registry_token }}
     - name: Pre-warm
       if: inputs.pre-warm == 'true'
-      run: >-
-        docker run
-        ${{ steps.settings.outputs.extra_args }}
-        --rm
-        --memory=${{ inputs.memory }}
-        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
-        -w ${{ steps.settings.outputs.work_path }}
-        ${{ inputs.image }}
-        ${{ inputs.entrypoint_args }}
-        {
-        ${{ inputs.pre-warm-cmd }}
-        }
+      run: |
+        docker run `
+        ${{ steps.settings.outputs.extra_args }} `
+        --rm `
+        --memory=${{ inputs.memory }} `
+        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }} `
+        -w ${{ steps.settings.outputs.work_path }} `
+        ${{ inputs.image }} `
+        ${{ inputs.entrypoint_args }} `
+        { `
+        ${{ inputs.pre-warm-cmd }} `
+        } 
         exit 0
       shell: powershell -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
     - name: Run
-      run: >-
+      run: |
         $runnerPathSource = Split-Path -Path "${env:RUNNER_TEMP}" -Parent;
-        $runnerPathTarget = $runnerPathSource.replace('D:', 'C:')
+        $runnerPathTarget = $runnerPathSource.replace('D:', 'C:');
 
-        docker run
-        ${{ steps.settings.outputs.default_environment_variables }}
-        ${{ steps.settings.outputs.extra_args }}
-        --rm
-        --memory=${{ inputs.memory }}
-        -v ${runnerPathSource}:${runnerPathTarget}
-        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
-        -w ${{ steps.settings.outputs.work_path }}
-        ${{ inputs.image }}
-        ${{ inputs.entrypoint_args }}
-        {
-        ${{ inputs.run }}
+        docker run `
+        ${{ steps.settings.outputs.default_environment_variables }} `
+        ${{ steps.settings.outputs.extra_args }} `
+        --rm `
+        --memory=${{ inputs.memory }} `
+        -v ${runnerPathSource}:${runnerPathTarget} `
+        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }} `
+        -w ${{ steps.settings.outputs.work_path }} `
+        ${{ inputs.image }} `
+        ${{ inputs.entrypoint_args }} `
+        { `
+          ${{ inputs.run }} `
         }
       shell: powershell -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
     - name: docker_logout
       id: docker_logout
       if: inputs.registry_authentication == 'true'
       shell: powershell -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
-      run: >-
+      run: |
         docker logout ${{ inputs.registry_repository }}
