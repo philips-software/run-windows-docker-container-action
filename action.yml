@@ -96,9 +96,7 @@ runs:
         -w ${{ steps.settings.outputs.work_path }} `
         ${{ inputs.image }} `
         ${{ inputs.entrypoint_args }} `
-        { `
-        ${{ inputs.pre-warm-cmd }} `
-        } 
+        ${{ inputs.pre-warm-cmd }}
         exit 0
       shell: powershell -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
     - name: Run
@@ -116,9 +114,7 @@ runs:
         -w ${{ steps.settings.outputs.work_path }} `
         ${{ inputs.image }} `
         ${{ inputs.entrypoint_args }} `
-        { `
-          ${{ inputs.run }} `
-        }
+        ${{ inputs.run }}
       shell: powershell -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
     - name: docker_logout
       id: docker_logout
