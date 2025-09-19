@@ -36,7 +36,7 @@ jobs:
           image: ${{ matrix.docker_container }}
           mapping_path: 'c:\map'
           entrypoint: powershell.exe
-          entrypoint_args: '-NoLogo -NonInteractive -NoProfile -OutputFormat Text'
+          entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           env_names: TEST_MAPPING_PATH
           run: >-
             c:\map\test\run_test.ps1 -testPath "c:\map\test\run_default.Tests.ps1";
@@ -57,7 +57,7 @@ jobs:
         with:
           image: ${{ matrix.docker_container }}
           entrypoint: powershell.exe
-          entrypoint_args: '-NoLogo -NonInteractive -NoProfile -OutputFormat Text'
+          entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           mapping_path: 'c:\map'
           env_names: TEST1, TEST2, TEST3
           run: >-
@@ -68,7 +68,7 @@ jobs:
         with:
           image: ${{ matrix.docker_container }}
           entrypoint: powershell.exe
-          entrypoint_args: '-NoLogo -NonInteractive -NoProfile -OutputFormat Text'
+          entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           mapping_path: 'c:\map'
           run: >-
             c:\map\test\run_test.ps1 -testPath "c:\map\test\default_environment.Tests.ps1";
@@ -80,7 +80,7 @@ jobs:
           mapping_path: 'c:\map'
           work_path: 'c:\temp'
           entrypoint: powershell.exe
-          entrypoint_args: '-NoLogo -NonInteractive -NoProfile -OutputFormat Text'
+          entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           memory: 3GB
           run: >-
             c:\map\test\run_test.ps1 -testPath "c:\map\test\work_path.Tests.ps1";
@@ -92,7 +92,7 @@ jobs:
           mapping_path: 'c:\mapping'
           work_path: 'c:\temp'
           entrypoint: powershell.exe
-          entrypoint_args: '-NoLogo -NonInteractive -NoProfile -OutputFormat Text'
+          entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           memory: 3GB
           run: >-
             c:\mapping\test\run_test.ps1 -testPath "c:\mapping\test\mapping_path.Tests.ps1";
@@ -104,7 +104,7 @@ jobs:
           mapping_path: 'c:\map'
           workspace_path: ${{ github.workspace }}/test
           entrypoint: powershell.exe
-          entrypoint_args: '-NoLogo -NonInteractive -NoProfile -OutputFormat Text'
+          entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           memory: 3GB
           env_names: TEST_MAPPING_PATH
           run: >-
@@ -118,7 +118,7 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Install
-        shell: pwsh -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
+        shell: pwsh -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
         run: >-
              Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted;
              Install-Module -Name Pester -Force -SkipPublisherCheck;
@@ -126,15 +126,15 @@ jobs:
              Install-Module -Name PSScriptAnalyzer -Force;
              Import-Module PSScriptAnalyzer -ErrorAction Stop
       - name: Linter src
-        shell: pwsh -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
+        shell: pwsh -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
         run: >-
              Invoke-ScriptAnalyzer -Path src -EnableExit;
       - name: Linter test
-        shell: pwsh -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
+        shell: pwsh -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
         run: >-
              Invoke-ScriptAnalyzer -Path test -EnableExit;
       - name: Test-Action-Scripts
-        shell: pwsh -NoLogo -NonInteractive -NoProfile -OutputFormat Text -Command ". '{0}'"
+        shell: pwsh -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
         run: >-
              Set-Location src;
              $config=New-PesterConfiguration;
