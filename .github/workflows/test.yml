@@ -38,7 +38,7 @@ jobs:
           entrypoint: powershell.exe
           entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           env_names: TEST_MAPPING_PATH
-          run: >-
+          run: |
             c:\map\test\run_test.ps1 -testPath "c:\map\test\run_default.Tests.ps1";
 
       - name: Test_ExtraArgs
@@ -48,9 +48,8 @@ jobs:
           mapping_path: 'c:\map'
           workspace_path: ${{ github.workspace }}
           extra_args: --entrypoint cmd.exe
-          run: >-
-            echo "Hello world";
-            exit %ERRORLEVEL%;
+          run: |
+            echo Hello world & exit %ERRORLEVEL%
 
       - name: Test_Environment
         uses: ./
@@ -60,7 +59,7 @@ jobs:
           entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           mapping_path: 'c:\map'
           env_names: TEST1, TEST2, TEST3
-          run: >-
+          run: |
             c:\map\test\run_test.ps1 -testPath "c:\map\test\environment.Tests.ps1";
 
       - name: Test_Default_Environment
@@ -70,7 +69,7 @@ jobs:
           entrypoint: powershell.exe
           entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           mapping_path: 'c:\map'
-          run: >-
+          run: |
             c:\map\test\run_test.ps1 -testPath "c:\map\test\default_environment.Tests.ps1";
 
       - name: Test_WorkPath
@@ -82,7 +81,7 @@ jobs:
           entrypoint: powershell.exe
           entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           memory: 3GB
-          run: >-
+          run: |
             c:\map\test\run_test.ps1 -testPath "c:\map\test\work_path.Tests.ps1";
 
       - name: Test_MappingPath
@@ -94,7 +93,7 @@ jobs:
           entrypoint: powershell.exe
           entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           memory: 3GB
-          run: >-
+          run: |
             c:\mapping\test\run_test.ps1 -testPath "c:\mapping\test\mapping_path.Tests.ps1";
 
       - name: Test_WorkSpacePath
@@ -107,7 +106,7 @@ jobs:
           entrypoint_args: '-NoLogo -NonInteractive -NoProfile'
           memory: 3GB
           env_names: TEST_MAPPING_PATH
-          run: >-
+          run: |
             c:\map\run_test.ps1 -testPath "c:\map\workspace_path.Tests.ps1";
 
   validate:
@@ -119,7 +118,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Install
         shell: pwsh -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
-        run: >-
+        run: |
              Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted;
              Install-Module -Name Pester -Force -SkipPublisherCheck;
              Update-Module -Name Pester -Force;
@@ -127,15 +126,15 @@ jobs:
              Import-Module PSScriptAnalyzer -ErrorAction Stop
       - name: Linter src
         shell: pwsh -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
-        run: >-
+        run: |
              Invoke-ScriptAnalyzer -Path src -EnableExit;
       - name: Linter test
         shell: pwsh -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
-        run: >-
+        run: |
              Invoke-ScriptAnalyzer -Path test -EnableExit;
       - name: Test-Action-Scripts
         shell: pwsh -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
-        run: >-
+        run: |
              Set-Location src;
              $config=New-PesterConfiguration;
              $config.Run.Exit=$true;
