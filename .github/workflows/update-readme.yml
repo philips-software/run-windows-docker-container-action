@@ -1,5 +1,4 @@
 name: Update README
-
 on:
   push:
     branches: [ main ]
@@ -10,30 +9,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Checkout Code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # ratchet:actions/checkout@v3
+        with:
+          fetch-depth: 3
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update README
-        uses: npalm/action-docs-action@b1dd20339140224c1ffef389467e4fece8dc416b # v3.1.2
+        uses: npalm/action-docs-action@b1dd20339140224c1ffef389467e4fece8dc416b
         with:
-          readme: ./README.md
-          actionFile: ./action.yml
+          readme: README.md
+          sourceFile: action.yml
           tocLevel: 2
           lineBreaks: LF
 
-      - name: commit and push
-        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
+      # Create pull request if applicable (for now works only on PR from same repository, not from forks)
+      - name: Create Pull Request with applied fixes
+        id: cpr
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # ratchet:peter-evans/create-pull-request@v4
         with:
-          commit_message: "Auto-update README.md"
-          branch: "update-readme"
-          push_options: '--force'
-          create_branch: true
-
-      - name: Create pull request
-        uses: devops-infra/action-pull-request@a650fadebe990f25fa1e09369bf95d4a9b45ea2b # v0.6.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: update-readme
-          target_branch: main
-          label: automated
-          title: Update README.md
-          body: "Automatically updated contents of README.md based on an updated action.yml file"
+          commit-message: "Auto-update README.md"
+          title: "Update Readme.md"
+          labels: bot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create PR output
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
