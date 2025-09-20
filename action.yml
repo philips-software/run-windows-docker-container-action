@@ -10,7 +10,7 @@ inputs:
     description: 'Docker image.'
     required: true
   run:
-    description: 'Command to execute.'
+    description: 'Command to execute. Must be single line for cmd.exe entry point (use &, && or \|\| operators to aggregate multiple commands). Can be multiline for entry points that support it, like powershell.exe.'
     required: true
   workspace_path:
     description: 'Workspace path. Default is root workspace path.'
@@ -29,6 +29,10 @@ inputs:
     description: "Overrides the default ENTRYPOINT in docker image."
     required: false
     default: ''
+  entrypoint_args:
+    description: "Optional arguments for the ENTRYPOINT (default or overriden). For instance, `/S /C` for cmd.exe or `-NoLogo -NonInteractive -NoProfile` for powershell.exe."
+    required: false
+    default: ''
   env_names:
     description: 'Environment variable names passed to docker image as comma separated list, for example: NAME1, NAME2, NAME3'
     required: false
@@ -44,7 +48,7 @@ inputs:
   pre-warm-cmd:
     description: 'Pre warm command to run inside the container'
     required: false
-    default: 'echo "warming up!"'
+    default: 'Write-Output "warming up!"'
   registry_authentication:
     description : 'Authenticate against registry server'
     required : false
@@ -70,31 +74,41 @@ runs:
       shell: bash
     - name: settings
       id: settings
-      run: >-
+      run: |
           ${{ github.action_path }}/src/parse_input_paths.ps1 -githubWorkSpace "${{ github.workspace }}" -workspacePath "@${{ inputs.workspace_path }}" -mappingPath "@${{ inputs.mapping_path }}" -workPath "@${{ inputs.work_path }}";
           ${{ github.action_path }}/src/parse_input_extra_args.ps1 -envNames "@${{ inputs.env_names }}" -entryPoint "@${{ inputs.entrypoint }}" -extraArgs "@${{ inputs.extra_args }}";
           ${{ github.action_path }}/src/assign_default_environment_variables.ps1;
-      shell: powershell
+      shell: powershell -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
     - name: docker_login
       id: docker_login
       if: inputs.registry_authentication == 'true'
-      shell: powershell
-      run: >-
+      shell: powershell -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
+      run: |
         docker login ${{ inputs.registry_repository }} -u ${{ inputs.registry_username }} -p ${{ inputs.registry_token }}
     - name: Pre-warm
       if: inputs.pre-warm == 'true'
-      run: |
-        docker run ${{ steps.settings.outputs.extra_args }} `
-        --rm --memory=${{ inputs.memory }} `
-        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }} `
-        -w ${{ steps.settings.outputs.work_path }} `
-        ${{ inputs.image }} { ${{ inputs.pre-warm-cmd }} }
+      run: >-
+        docker run
+        ${{ steps.settings.outputs.extra_args }}
+        --rm
+        --memory=${{ inputs.memory }}
+        -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
+        -w ${{ steps.settings.outputs.work_path }}
+        ${{ inputs.image }}
+        ${{ inputs.entrypoint_args }}
+        @"
+
+        ${{ inputs.pre-warm-cmd }}
+
+        "@
+
         exit 0
-      shell: powershell
+      shell: powershell -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
     - name: Run
       run: >-
         $runnerPathSource = Split-Path -Path "${env:RUNNER_TEMP}" -Parent;
-        $runnerPathTarget = $runnerPathSource.replace('D:', 'C:')
+
+        $runnerPathTarget = $runnerPathSource.replace('D:', 'C:');
 
         docker run
         ${{ steps.settings.outputs.default_environment_variables }}
@@ -105,13 +119,16 @@ runs:
         -v ${{ steps.settings.outputs.workspace_path }}:${{ steps.settings.outputs.mapping_path }}
         -w ${{ steps.settings.outputs.work_path }}
         ${{ inputs.image }}
-        {
+        ${{ inputs.entrypoint_args }}
+        @"
+
         ${{ inputs.run }}
-        }
-      shell: powershell
+
+        "@
+      shell: powershell -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
     - name: docker_logout
       id: docker_logout
       if: inputs.registry_authentication == 'true'
-      shell: powershell
-      run: >-
+      shell: powershell -NoLogo -NonInteractive -NoProfile -Command ". '{0}'"
+      run: |
         docker logout ${{ inputs.registry_repository }}
