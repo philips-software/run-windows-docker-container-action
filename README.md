@@ -11,24 +11,8 @@ Composite action for running commands in windows docker containers.
 
 ## Usage
 
-Simple 'Hello world' example using the default `cmd.exe` ENTRYPOINT with the `/C` option:
-```
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Test_Run
-        uses: philips-software/run-windows-docker-container-action@<version>
-        with:
-          image: mcr.microsoft.com/windows/servercore:20H2
-          entrypoint_args: /C
-          run: >-
-            echo Hello world & 
-            call run-test-script.bat;
-```
+Very simple hello world example:
 
-Simple 'Hello world' example overriding the default ENTRYPOINT:
 ```
     steps:
       - name: Checkout
@@ -41,7 +25,7 @@ Simple 'Hello world' example overriding the default ENTRYPOINT:
           image: mcr.microsoft.com/windows/servercore:20H2
           entrypoint: powershell.exe
           run: >-
-            Write-Output "Hello world";
+            echo "Hello world";
             ./run-test-script.ps1;
 ```
 
@@ -60,17 +44,16 @@ and work path.
 | parameter | description | required | default |
 | - | - | - | - |
 | image | Docker image. | `true` |  |
-| run | Command to execute. Must be single line for cmd.exe entry point (use &, && or \|\| operators to aggregate multiple commands). Can be multiline for entry points that support it, like powershell.exe. | `true` |  |
+| run | Command to execute. | `true` |  |
 | workspace_path | Workspace path. Default is root workspace path. | `false` |  |
 | mapping_path | Mapping path, i.e. path to where the workspace path is mapped in the docker container. Defaults to workspace_path. | `false` |  |
 | work_path | Work path, i.e. path where the command in the docker container is executed. Defaults to workspace_path. | `false` |  |
 | memory | Memory limit. See docker documentation on --memory. | `false` | 4GB |
 | entrypoint | Overrides the default ENTRYPOINT in docker image. | `false` |  |
-| entrypoint_args | Optional arguments for the ENTRYPOINT (default or overriden). For instance, `/S /C` for cmd.exe or `-NoLogo -NonInteractive -NoProfile` for powershell.exe. | `false` |  |
 | env_names | Environment variable names passed to docker image as comma separated list, for example: NAME1, NAME2, NAME3 | `false` |  |
 | extra_args | Extra arguments for docker run command. | `false` |  |
 | pre-warm | Run a warming-up container (which might crash due to first time use failure) | `false` | true |
-| pre-warm-cmd | Pre warm command to run inside the container | `false` | Write-Output "warming up!" |
+| pre-warm-cmd | Pre warm command to run inside the container | `false` | echo "warming up!" |
 | registry_authentication | Authenticate against registry server | `false` | false |
 | registry_username | Docker registry username. | `false` |  |
 | registry_token | Docker registry token | `false` |  |
