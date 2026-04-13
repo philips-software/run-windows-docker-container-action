@@ -26,7 +26,7 @@ jobs:
       # Create pull request if applicable (for now works only on PR from same repository, not from forks)
       - name: Create Pull Request with applied fixes
         id: cpr
-        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # ratchet:peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # ratchet:peter-evans/create-pull-request@v4
         with:
           commit-message: "Auto-update README.md"
           title: "Update Readme.md"
